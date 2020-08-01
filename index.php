@@ -1,121 +1,65 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
-const KITCHEN_LAMPS_PREFIX = 'кухня лампа';
-const LIVING_ROOM_LAMPS_PREFIX = 'Комната лампа';
+use App\MiioWrapper;
+use App\DevicesRepository;
 
-function shellExec($cmd) {
-    $homeDirectory = trim(shell_exec('echo ~'));
-    $exportLocalBinPath = 'export PATH=$PATH:'.$homeDirectory.'/.local/bin;';
-    return shell_exec($exportLocalBinPath.$cmd);
-}
-
-
-function miPowerPlugIsOn($ip, $token) {
-    $result = shellExec('miplug --ip '.$ip.' --token '.$token.' status');
-    if (false === stristr($result, 'power: ')) {
-        return null;
-    } else {
-        if (false !== stristr($result, 'power: true')) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-
-function toggleSwitch($ip, $token, $model) {
-    if ($model === 'chuangmi.plug.m1') {
-        $miPowerPlugIsOn = miPowerPlugIsOn($ip, $token);
-        if (null === $miPowerPlugIsOn) {
-            return;
-        }
-        if ($miPowerPlugIsOn) {
-            $param = 'off';
-        } else {
-            $param = 'on';
-        }
-        $command = 'miplug';
-    } elseif (false !== stristr($model, 'yeelink.light')) {
-        $param = 'toggle';
-        $command = 'miiocli yeelight';
-    }
-    shellExec($command.' --ip '.$ip.' --token '.$token.' '.$param);
-}
-
-$myFilename = 'sqlite.sqlite';
-$myDatabase = new SQLite3($myFilename);
+$miioWrapper = new MiioWrapper();
+$devicesRepository = new DevicesRepository();
 
 $action = !empty($_GET['action']) ? $_GET['action'] : '';
 
+if (!empty($_GET['id'])) {
+    $id = $_GET['id'];
+    $ids = explode(',', $id);
+} else {
+    $ids = [];
+}
 switch ($action) {
     case 'git-pull':
-        $content = shell_exec('git pull 2>&1');
+        echo shell_exec('git pull 2>&1');
+    case 'off':
+        $devices = $devicesRepository->getByIds($ids);
+
+        foreach ($devices as $device) {
+            $miioWrapper->off($device['ip'], $device['token'], $device['model']);
+        }
+        header('Location: /');
+        break;
+    case 'off-all':
+        $devices = $devicesRepository->getAvailableDevices();
+
+        foreach ($devices as $device) {
+            $miioWrapper->off($device['ip'], $device['token'], $device['model']);
+        }
+        header('Location: /');
+        break;
+    case 'on':
+        $devices = $devicesRepository->getByIds($ids);
+
+        foreach ($devices as $device) {
+            $miioWrapper->on($device['ip'], $device['token'], $device['model']);
+        }
+        header('Location: /');
         break;
     case 'toggle-switch':
-        if (!empty($_GET['id'])) {
-            $id = $_GET['id'];
-        } else {
-            break;
+        $devices = $devicesRepository->getByIds($ids);
+
+        foreach ($devices as $device) {
+            $miioWrapper->toggleSwitch($device['ip'], $device['token'], $device['model']);
         }
-
-        $idsArray = explode(',', $id);
-
-        $placeHolders = [];
-        foreach ($idsArray as $key => $idItem) {
-            $placeHolders[':id'.$key] = $idItem;
-        }
-
-        $stmt = $myDatabase->prepare(
-            'SELECT
-                *
-                FROM devices
-                WHERE id IN ('.implode(',', array_keys($placeHolders)).');
-        ');
-
-        foreach ($placeHolders as $key => $idItem) {
-            $stmt->bindValue($key, $idItem, SQLITE3_TEXT);
-        }
-
-        $result = $stmt->execute();
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            toggleSwitch($row['ip'], $row['token'], $row['model']);
-        }
-//        break;
+        header('Location: /');
+        break;
+    case 'with-status':
+        $content = $devicesRepository->getAvailableDevicesGrouped(true);
+        break;
     case 'index':
     default:
-        $result = $myDatabase->query(
-            'SELECT
-                *
-                FROM devices
-                WHERE model = "chuangmi.plug.m1" OR model like "yeelink.light%"
-                ORDER BY name ASC;
-        ');
-        $rows = [];
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            $row['status'] = '';
-            if (stristr($row['name'], LIVING_ROOM_LAMPS_PREFIX)){
-                $rows[LIVING_ROOM_LAMPS_PREFIX] = [
-                    'name' => LIVING_ROOM_LAMPS_PREFIX,
-                    'id' => !empty($rows[LIVING_ROOM_LAMPS_PREFIX]['id']) ? $rows[LIVING_ROOM_LAMPS_PREFIX]['id'].','.$row['id'] : $row['id'],
-                    'model' => $row['model'],
-                    'status' => $row['status'],
-                ];
-            } elseif (stristr($row['name'], KITCHEN_LAMPS_PREFIX)) {
-                $rows[KITCHEN_LAMPS_PREFIX] = [
-                    'name' => KITCHEN_LAMPS_PREFIX,
-                    'id' => !empty($rows[KITCHEN_LAMPS_PREFIX]['id']) ? $rows[KITCHEN_LAMPS_PREFIX]['id'].','.$row['id'] : $row['id'],
-                    'model' => $row['model'],
-                    'status' => $row['status'],
-                ];
-            } else {
-                $rows[$row['name']] = $row;
-            }
-        }
+        $content = $devicesRepository->getAvailableDevicesGrouped();
         break;
 }
-
-
-
 
 
 require_once 'web/main.html.php';

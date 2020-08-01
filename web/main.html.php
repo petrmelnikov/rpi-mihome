@@ -11,18 +11,22 @@
                 <table class="table">
                     <tr>
                         <th>name</th>
+                        <th>control <a class="btn btn-primary" href="/?action=off-all">off all</a></th>
+                        <th><a class="btn btn-primary" href="/?action=with-status">status</a></th>
                         <th>model</th>
-                        <th>status</th>
-                        <th>control</th>
                     </tr>
                 <?php
-                foreach ($rows as $row) {
+                foreach ($content as $row) {
                     ?>
                     <tr>
-                        <td><?= $row['name'] ?></td>
-                        <td><?= $row['model'] ?></td>
+                        <td><?= mb_convert_case((mb_strtolower($row['name'])), MB_CASE_TITLE, "UTF-8") ?></td>
+                        <td>
+                            <a class="btn btn-primary" href="/?action=on&id=<?=$row['id']?>">on</a>
+                            <a class="btn btn-primary" href="/?action=off&id=<?=$row['id']?>">off</a>
+                            <a class="btn btn-primary" href="/?action=toggle-switch&id=<?=$row['id']?>">on/off</a>
+                        </td>
                         <td><?= $row['status'] ?></td>
-                        <td><a class="btn btn-primary" href="/?action=toggle-switch&id=<?=$row['id']?>">on/off</a></td>
+                        <td><?= $row['model'] ?></td>
                     </tr>
                     <?php
                 }
