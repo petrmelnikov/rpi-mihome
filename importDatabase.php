@@ -16,7 +16,17 @@ $result = $mihomeDatabase->query(
 $myFilename = 'sqlite.sqlite';
 $myDatabase = new SQLite3($myFilename);
 
-$myDatabase->exec('DELETE FROM devices;');
+
+$myDatabase->exec('DROP TABLE if exists devices;');
+$myDatabase->exec(
+    'CREATE TABLE devices (
+            id    INTEGER PRIMARY KEY,
+            ip    STRING (20),
+            name  STRING (255),
+            model STRING (255),
+            token STRING (255)
+            );'
+);
 
 while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
     if (empty($row['ZLOCALIP'])) {
