@@ -5,7 +5,7 @@ const LIVING_ROOM_LAMPS_PREFIX = 'Комната лампа';
 
 function shellExec($cmd) {
     $homeDirectory = shell_exec('echo ~');
-    $exportLocalBinPath = 'export PATH=$PATH:'.$homeDirectory.'.local/bin;';
+    $exportLocalBinPath = 'export PATH=$PATH:'.$homeDirectory.'/.local/bin;';
     return shell_exec($exportLocalBinPath.$cmd);
 }
 
