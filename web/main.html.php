@@ -6,8 +6,12 @@
 </head>
 <body>
     <div class="container">
+        <a class="btn btn-primary" href="/">index</a>
         <div class="row">
             <div class="col-sm">
+                <?php
+                    if (is_array($content)) {
+                ?>
                 <table class="table">
                     <tr>
                         <th>name</th>
@@ -32,6 +36,11 @@
                 }
                 ?>
                 </table>
+                <?php
+                    } else {
+                        echo $content;
+                    }
+                ?>
             </div>
         </div>
         <div class="row">

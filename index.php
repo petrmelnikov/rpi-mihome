@@ -19,7 +19,8 @@ if (!empty($_GET['id'])) {
 }
 switch ($action) {
     case 'git-pull':
-        echo shell_exec('git pull 2>&1');
+        $content = shell_exec('git pull 2>&1');
+        break;
     case 'off':
         $devices = $devicesRepository->getByIds($ids);
 
@@ -60,6 +61,6 @@ switch ($action) {
         $content = $devicesRepository->getAvailableDevicesGrouped();
         break;
 }
-
-
 require_once 'web/main.html.php';
+
+
