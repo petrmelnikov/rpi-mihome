@@ -1,0 +1,7 @@
+{
+    "require": {
+        "php": "^7.3",
+        "twbs/bootstrap": "4.0.0",
+        "components/jquery": "^3.5"
+    }
+}
