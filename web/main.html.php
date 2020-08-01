@@ -1,7 +1,7 @@
 <head>
     <meta name="referrer" content="no-referrer"/>
-<!--    <script src="/vendor/components/jquery/jquery.min.js"></script>-->
-<!--    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.js"></script>-->
+    <script src="/vendor/components/jquery/jquery.min.js"></script>
+    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css">
 </head>
 <body>
@@ -16,20 +16,20 @@
                     <tr>
                         <th>name</th>
                         <th>control <a class="btn btn-primary" href="/?action=off-all">off all</a></th>
-                        <th><a class="btn btn-primary" href="/?action=with-status">status</a></th>
+                        <th><a class="btn btn-primary btn-refresh-all" href="/?action=with-status">status</a></th>
                         <th>model</th>
                     </tr>
                 <?php
                 foreach ($content as $row) {
                     ?>
                     <tr>
-                        <td><?= mb_convert_case((mb_strtolower($row['name'])), MB_CASE_TITLE, "UTF-8") ?></td>
-                        <td>
+                        <td style="white-space:nowrap;"><?= mb_convert_case((mb_strtolower($row['name'])), MB_CASE_TITLE, "UTF-8") ?></td>
+                        <td style="white-space:nowrap;">
                             <a class="btn btn-primary" href="/?action=on&id=<?=$row['id']?>">on</a>
                             <a class="btn btn-primary" href="/?action=off&id=<?=$row['id']?>">off</a>
                             <a class="btn btn-primary" href="/?action=toggle-switch&id=<?=$row['id']?>">on/off</a>
                         </td>
-                        <td><?= $row['status'] ?></td>
+                        <td style="white-space:nowrap;"><a class="btn btn-refresh" href="/?action=status&id=<?=$row['id']?>"><?= $row['status'] ?></a></td>
                         <td><?= $row['model'] ?></td>
                     </tr>
                     <?php
@@ -49,5 +49,23 @@
             </div>
         </div>
     </div>
-
+    <script type="text/javascript">
+        $(".btn-refresh").click(function(event) {
+            event.preventDefault();
+            let button = $(this);
+            let url = button.attr('href');
+            $.get(url, function( data ) {
+                let statuses = '';
+                dataArray = JSON.parse(data);
+                dataArray.forEach(function(value) {
+                    statuses += value.status+'/';
+                });
+                button.parent().text(statuses)
+            });
+        });
+        $(".btn-refresh-all").click(function(event) {
+            event.preventDefault();
+            $(".btn-refresh").click();
+        });
+    </script>
 </body>

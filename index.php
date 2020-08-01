@@ -53,6 +53,11 @@ switch ($action) {
         }
         header('Location: /');
         break;
+    case 'status':
+        $statuses = $devicesRepository->getDeviceStatusByIds($ids);
+        echo json_encode($statuses);
+        die;
+        break;
     case 'with-status':
         $content = $devicesRepository->getAvailableDevicesGrouped(true);
         break;

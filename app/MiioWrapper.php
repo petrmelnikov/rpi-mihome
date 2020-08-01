@@ -13,7 +13,7 @@ class MiioWrapper {
         $this->homeDirectoryPath = trim(shell_exec('echo ~'));
     }
 
-    private function shellExec(string $cmd): string {
+    private function shellExec(string $cmd): ?string {
         $exportLocalBinPath = 'export PATH=$PATH:'.$this->homeDirectoryPath.'/.local/bin;';
         return shell_exec($exportLocalBinPath.$cmd);
     }

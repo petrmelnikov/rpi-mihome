@@ -45,7 +45,7 @@ class DevicesRepository {
         ');
         $result = [];
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
-            $row['status'] = $withStatus ? $this->getDeviceStatus($row['ip'], $row['token'], $row['model']) : '';
+            $row['status'] = $withStatus ? $this->getDeviceStatus($row['ip'], $row['token'], $row['model']) : '?';
             $result[] = $row;
         }
         return $result;
@@ -84,7 +84,19 @@ class DevicesRepository {
         return $result;
     }
 
-    private function getDeviceStatus(string $ip, string $token, string $model) {
+    public function getDeviceStatusByIds(array $ids): array {
+        $devices = $this->getByIds($ids);
+        $statuses = [];
+        foreach ($devices as $device) {
+            $statuses[] = [
+                'id' => $device['id'],
+                'status' => $this->getDeviceStatus($device['ip'], $device['token'], $device['model']),
+            ];
+        }
+        return $statuses;
+    }
+
+    private function getDeviceStatus(string $ip, string $token, string $model): string {
         $miioWrapper = new MiioWrapper();
         $status = $miioWrapper->getDevicePowerStateByModel($ip, $token, $model);
         $result = 'offline';
