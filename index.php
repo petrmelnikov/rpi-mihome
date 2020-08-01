@@ -3,8 +3,15 @@
 const KITCHEN_LAMPS_PREFIX = 'кухня лампа';
 const LIVING_ROOM_LAMPS_PREFIX = 'Комната лампа';
 
+function shellExec($cmd) {
+    $homeDirectory = shell_exec('echo ~');
+    $exportLocalBinPath = 'export PATH=$PATH:'.$homeDirectory.'.local/bin;';
+    return shell_exec($exportLocalBinPath.$cmd);
+}
+
+
 function miPowerPlugIsOn($ip, $token) {
-    $result = shell_exec('miplug --ip '.$ip.' --token '.$token.' status');
+    $result = shellExec('miplug --ip '.$ip.' --token '.$token.' status');
     if (false === stristr($result, 'power: ')) {
         return null;
     } else {
@@ -32,7 +39,7 @@ function toggleSwitch($ip, $token, $model) {
         $param = 'toggle';
         $command = 'miiocli yeelight';
     }
-    shell_exec($command.' --ip '.$ip.' --token '.$token.' '.$param);
+    shellExec($command.' --ip '.$ip.' --token '.$token.' '.$param);
 }
 
 $myFilename = 'sqlite.sqlite';
