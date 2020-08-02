@@ -4,7 +4,7 @@ namespace App;
 
 class DevicesRepository {
     const KITCHEN_LAMPS_PREFIX = 'кухня лампа';
-    const LIVING_ROOM_LAMPS_PREFIX = 'Комната лампа';
+    const LIVING_ROOM_LAMPS_PREFIX = 'комната лампа';
 
     public function __construct() {
 
@@ -46,15 +46,20 @@ class DevicesRepository {
         $result = [];
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
             $row['status'] = $withStatus ? $this->getDeviceStatus($row['ip'], $row['token'], $row['model']) : '?';
+            $row['name'] = $this->normalizeNameCase($row['name']);
             $result[] = $row;
         }
         return $result;
     }
 
+    private function normalizeNameCase(string $name): string {
+        return mb_convert_case((mb_strtolower($name)), MB_CASE_TITLE, "UTF-8");
+    }
+
     private function getDeviceGroupName(string $deviceName) {
-        if (stristr($deviceName, self::LIVING_ROOM_LAMPS_PREFIX)) {
+        if (mb_stristr($deviceName, self::LIVING_ROOM_LAMPS_PREFIX)) {
             return self::LIVING_ROOM_LAMPS_PREFIX;
-        } elseif (stristr($deviceName, self::KITCHEN_LAMPS_PREFIX)) {
+        } elseif (mb_stristr($deviceName, self::KITCHEN_LAMPS_PREFIX)) {
             return self::KITCHEN_LAMPS_PREFIX;
         } else {
             return '';
@@ -72,10 +77,11 @@ class DevicesRepository {
                 $status = !empty($result[$groupName]['status']) ? $result[$groupName]['status'] . '/' . $device['status'] : $device['status'];
                 $model = !empty($result[$groupName]['model']) ? $result[$groupName]['model'] . '/' . $device['model'] : $device['model'];
                 $result[$groupName] = [
-                    'name' => $groupName,
+                    'name' => $this->normalizeNameCase($groupName),
                     'id' => $id,
                     'model' => $model,
                     'status' => $status,
+                    'group' => 1,
                 ];
             } else {
                 $result[$device['name']] = $device;

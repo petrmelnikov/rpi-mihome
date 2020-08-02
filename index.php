@@ -17,6 +17,12 @@ if (!empty($_GET['id'])) {
 } else {
     $ids = [];
 }
+
+function redirect() {
+    $location = '/';
+    header('Location: '.$location);
+}
+
 switch ($action) {
     case 'git-pull':
         $content = shell_exec('git pull 2>&1');
@@ -27,7 +33,7 @@ switch ($action) {
         foreach ($devices as $device) {
             $miioWrapper->off($device['ip'], $device['token'], $device['model']);
         }
-        header('Location: /');
+        redirect();
         break;
     case 'off-all':
         $devices = $devicesRepository->getAvailableDevices();
@@ -35,7 +41,7 @@ switch ($action) {
         foreach ($devices as $device) {
             $miioWrapper->off($device['ip'], $device['token'], $device['model']);
         }
-        header('Location: /');
+        redirect();
         break;
     case 'on':
         $devices = $devicesRepository->getByIds($ids);
@@ -43,7 +49,7 @@ switch ($action) {
         foreach ($devices as $device) {
             $miioWrapper->on($device['ip'], $device['token'], $device['model']);
         }
-        header('Location: /');
+        redirect();
         break;
     case 'toggle-switch':
         $devices = $devicesRepository->getByIds($ids);
@@ -51,7 +57,7 @@ switch ($action) {
         foreach ($devices as $device) {
             $miioWrapper->toggleSwitch($device['ip'], $device['token'], $device['model']);
         }
-        header('Location: /');
+        redirect();
         break;
     case 'status':
         $statuses = $devicesRepository->getDeviceStatusByIds($ids);
@@ -60,6 +66,9 @@ switch ($action) {
         break;
     case 'with-status':
         $content = $devicesRepository->getAvailableDevicesGrouped(true);
+        break;
+    case 'by-ids':
+        $content = $devicesRepository->getByIds($ids);
         break;
     case 'index':
     default:

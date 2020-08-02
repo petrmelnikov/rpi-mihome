@@ -23,13 +23,13 @@
                 foreach ($content as $row) {
                     ?>
                     <tr>
-                        <td style="white-space:nowrap;"><?= mb_convert_case((mb_strtolower($row['name'])), MB_CASE_TITLE, "UTF-8") ?></td>
+                        <td style="white-space:nowrap;"><?= isset($row['group']) ? '<a href="/?action=by-ids&id='.$row['id'].'">'.$row['name'].'</a>' : $row['name'] ?></td>
                         <td style="white-space:nowrap;">
-                            <a class="btn btn-primary" href="/?action=on&id=<?=$row['id']?>">on</a>
-                            <a class="btn btn-primary" href="/?action=off&id=<?=$row['id']?>">off</a>
-                            <a class="btn btn-primary" href="/?action=toggle-switch&id=<?=$row['id']?>">on/off</a>
+                            <a class="btn btn-primary btn-on-off" href="/?action=on&id=<?=$row['id']?>">on</a>
+                            <a class="btn btn-primary btn-on-off" href="/?action=off&id=<?=$row['id']?>">off</a>
+                            <a class="btn btn-primary btn-on-off" href="/?action=toggle-switch&id=<?=$row['id']?>">on/off</a>
                         </td>
-                        <td style="white-space:nowrap;"><a class="btn btn-refresh" href="/?action=status&id=<?=$row['id']?>"><?= $row['status'] ?></a></td>
+                        <td style="white-space:nowrap;"><a class="btn-refresh" href="/?action=status&id=<?=$row['id']?>"><?= $row['status'] ?? '?' ?></a></td>
                         <td><?= $row['model'] ?></td>
                     </tr>
                     <?php
@@ -60,8 +60,14 @@
                 dataArray.forEach(function(value) {
                     statuses += value.status+'/';
                 });
-                button.parent().text(statuses)
+                button.parent().find('a').text(statuses)
             });
+        });
+        $(".btn-on-off").click(function(event) {
+            event.preventDefault();
+            let button = $(this);
+            let url = button.attr('href');
+            $.get(url, function() {});
         });
         $(".btn-refresh-all").click(function(event) {
             event.preventDefault();
