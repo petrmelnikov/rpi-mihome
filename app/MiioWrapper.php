@@ -8,14 +8,20 @@ class MiioWrapper {
     const YEELIGHT_EXECUTABLE = 'miiocli yeelight';
 
     private $homeDirectoryPath;
+    private $debugCmds;
 
     public function __construct() {
         $this->homeDirectoryPath = trim(shell_exec('echo ~'));
+        $this->debugCmds = $_ENV['DEBUG_CMD'] ?? false;
     }
 
     private function shellExec(string $cmd): ?string {
         $exportLocalBinPath = 'export PATH=$PATH:'.$this->homeDirectoryPath.'/.local/bin;';
-        return shell_exec($exportLocalBinPath.$cmd);
+        $fullCmd = $exportLocalBinPath.$cmd;
+        if ($this->debugCmds) {
+            echo $fullCmd;
+        }
+        return shell_exec($fullCmd);
     }
 
     public function getDevicePowerStateByModel(string $ip, string $token, string $model) {

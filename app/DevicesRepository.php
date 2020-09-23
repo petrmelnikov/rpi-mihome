@@ -32,6 +32,9 @@ class DevicesRepository {
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
             $result[] = $row;
         }
+        usort($result, function ($a, $b){
+            return strcmp($a["name"], $b["name"]);
+        });
         return $result;
     }
 
@@ -87,6 +90,7 @@ class DevicesRepository {
                 $result[$device['name']] = $device;
             }
         }
+        krsort($result);
         return $result;
     }
 
