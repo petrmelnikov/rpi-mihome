@@ -23,7 +23,7 @@ require_once 'head.html';
                         }
                         ?>
                         <tr>
-                            <td style="white-space:nowrap;"><?= is_array($device) ? '<a href="/?action=by-ids&id='.TemplateHelpers::getIdsSeparatedByComma($device).'">'.$name.'</a>' : $name ?></td>
+                            <td style="white-space:nowrap;"><?= is_array($device) ? '<a href="/?mini=1&action=by-ids&id='.TemplateHelpers::getIdsSeparatedByComma($device).'">'.$name.'</a>' : $name ?></td>
                             <td style="white-space:nowrap;">
                                 <a class="btn btn-primary btn-on-off" href="/?action=on&id=<?=TemplateHelpers::getIdOrIds($device)?>">on</a>
                                 <a class="btn btn-primary btn-on-off" href="/?action=off&id=<?=TemplateHelpers::getIdOrIds($device)?>">off</a>
