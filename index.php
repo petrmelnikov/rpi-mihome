@@ -31,7 +31,7 @@ switch ($action) {
         $devices = $devicesRepository->getByIds($ids);
 
         foreach ($devices as $device) {
-            $miioWrapper->off($device['ip'], $device['token'], $device['model']);
+            $miioWrapper->off($device);
         }
         redirect();
         break;
@@ -39,7 +39,7 @@ switch ($action) {
         $devices = $devicesRepository->getAvailableDevices();
 
         foreach ($devices as $device) {
-            $miioWrapper->off($device['ip'], $device['token'], $device['model']);
+            $miioWrapper->off($device);
         }
         redirect();
         break;
@@ -47,7 +47,7 @@ switch ($action) {
         $devices = $devicesRepository->getByIds($ids);
 
         foreach ($devices as $device) {
-            $miioWrapper->on($device['ip'], $device['token'], $device['model']);
+            $miioWrapper->on($device);
         }
         redirect();
         break;
@@ -55,18 +55,25 @@ switch ($action) {
         $devices = $devicesRepository->getByIds($ids);
 
         foreach ($devices as $device) {
-            $miioWrapper->toggleSwitch($device['ip'], $device['token'], $device['model']);
+            $miioWrapper->toggleSwitch($device);
         }
         redirect();
         break;
-    case 'status':
-        $statuses = $devicesRepository->getDeviceStatusByIds($ids);
+    case 'get-status':
+        $devices = $devicesRepository->getByIds($ids);
+
+        $statuses = [];
+        foreach ($devices as $device) {
+            /** @var $device \App\Device */
+            $miioWrapper->updateDeviceStatus($device);
+            $statuses[] = [
+                'id' => $device->getId(),
+                'powerState' => $device->getPowerState() ? 'on' : 'off',
+                'brightness' =>  null !== $device->getBrightness() ? $device->getBrightness() : '-',
+            ];
+        }
         echo json_encode($statuses);
         die;
-        break;
-    case 'with-status':
-        $content = $devicesRepository->getAvailableDevicesGrouped(true);
-        break;
     case 'by-ids':
         $content = $devicesRepository->getByIds($ids);
         break;
@@ -75,6 +82,10 @@ switch ($action) {
         $content = $devicesRepository->getAvailableDevicesGrouped();
         break;
 }
-require_once 'web/main.html.php';
+if (!empty($_GET['mini'])) {
+    require_once 'web/mini-main.html.php';
+} else {
+    require_once 'web/main.html.php';
+}
 
 

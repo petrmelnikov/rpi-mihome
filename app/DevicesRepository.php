@@ -30,15 +30,15 @@ class DevicesRepository {
         $rows = $stmt->execute();
         $result = [];
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
-            $result[] = $row;
+            $result[] = $this->prepareRow($row);
         }
         usort($result, function ($a, $b){
-            return strcmp($a["name"], $b["name"]);
+            return strcmp($a->getName(), $b->getName());
         });
         return $result;
     }
 
-    public function getAvailableDevices($withStatus = false): array {
+    public function getAvailableDevices(): array {
         $rows = SQLite3Wrapper::getInstance()->query(
             'SELECT
                 *
@@ -48,11 +48,14 @@ class DevicesRepository {
         ');
         $result = [];
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
-            $row['status'] = $withStatus ? $this->getDeviceStatus($row['ip'], $row['token'], $row['model']) : '?';
-            $row['name'] = $this->normalizeNameCase($row['name']);
-            $result[] = $row;
+            $result[] =  $this->prepareRow($row);
         }
         return $result;
+    }
+
+    private function prepareRow(array $row): Device {
+        $row['name'] = $this->normalizeNameCase($row['name']);
+        return new Device($row);
     }
 
     private function normalizeNameCase(string $name): string {
@@ -69,50 +72,20 @@ class DevicesRepository {
         }
     }
 
-    public function getAvailableDevicesGrouped($withStatus = false): array {
-        $devices = $this->getAvailableDevices($withStatus);
+    public function getAvailableDevicesGrouped(): array {
+        $devices = $this->getAvailableDevices();
 
         $result = [];
         foreach ($devices as $device) {
-            $groupName = $this->getDeviceGroupName($device['name']);
+            $groupName = $this->getDeviceGroupName($device->getName());
             if (!empty($groupName)) {
-                $id = !empty($result[$groupName]['id']) ? $result[$groupName]['id'] . ',' . $device['id'] : $device['id'];
-                $status = !empty($result[$groupName]['status']) ? $result[$groupName]['status'] . '/' . $device['status'] : $device['status'];
-                $model = !empty($result[$groupName]['model']) ? $result[$groupName]['model'] . '/' . $device['model'] : $device['model'];
-                $result[$groupName] = [
-                    'name' => $this->normalizeNameCase($groupName),
-                    'id' => $id,
-                    'model' => $model,
-                    'status' => $status,
-                    'group' => 1,
-                ];
+                $groupName = $this->normalizeNameCase($groupName);
+                $result[$groupName][] = $device;
             } else {
-                $result[$device['name']] = $device;
+                $result[$device->getName()] = $device;
             }
         }
-        krsort($result);
-        return $result;
-    }
-
-    public function getDeviceStatusByIds(array $ids): array {
-        $devices = $this->getByIds($ids);
-        $statuses = [];
-        foreach ($devices as $device) {
-            $statuses[] = [
-                'id' => $device['id'],
-                'status' => $this->getDeviceStatus($device['ip'], $device['token'], $device['model']),
-            ];
-        }
-        return $statuses;
-    }
-
-    private function getDeviceStatus(string $ip, string $token, string $model): string {
-        $miioWrapper = new MiioWrapper();
-        $status = $miioWrapper->getDevicePowerStateByModel($ip, $token, $model);
-        $result = 'offline';
-        if (null !== $status) {
-            $result = $status ? 'on' : 'off';
-        }
+        ksort($result);
         return $result;
     }
 

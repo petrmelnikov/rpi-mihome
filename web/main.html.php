@@ -1,12 +1,11 @@
-<head>
-    <meta name="referrer" content="no-referrer"/>
-    <script src="/vendor/components/jquery/jquery.min.js"></script>
-    <script src="/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.js"></script>
-    <link rel="stylesheet" href="/vendor/twbs/bootstrap/dist/css/bootstrap.css">
-</head>
+<?php
+use App\TemplateHelpers;
+require_once 'head.html';
+?>
 <body>
     <div class="container">
         <a class="btn btn-primary" href="/">index</a>
+        <a class="btn btn-primary" href="/?mini=1">mini</a>
         <div class="row">
             <div class="col-sm">
                 <?php
@@ -16,21 +15,26 @@
                     <tr>
                         <th>name</th>
                         <th>control <a class="btn btn-primary" href="/?action=off-all">off all</a></th>
-                        <th><a class="btn btn-primary btn-refresh-all" href="/?action=with-status">status</a></th>
+                        <th>power state <a class="btn btn-primary btn-refresh-all" href="">refresh</a></th>
+                        <th>brightness <a class="btn btn-primary btn-refresh-all" href="">refresh</a></th>
                         <th>model</th>
                     </tr>
                 <?php
-                foreach ($content as $row) {
+                foreach ($content as $name => $device) {
+                    if (!is_array($device)) {
+                        $name = $device->getName();
+                    }
                     ?>
                     <tr>
-                        <td style="white-space:nowrap;"><?= isset($row['group']) ? '<a href="/?action=by-ids&id='.$row['id'].'">'.$row['name'].'</a>' : $row['name'] ?></td>
+                        <td style="white-space:nowrap;"><?= is_array($device) ? '<a href="/?action=by-ids&id='.TemplateHelpers::getIdsSeparatedByComma($device).'">'.$name.'</a>' : $name ?></td>
                         <td style="white-space:nowrap;">
-                            <a class="btn btn-primary btn-on-off" href="/?action=on&id=<?=$row['id']?>">on</a>
-                            <a class="btn btn-primary btn-on-off" href="/?action=off&id=<?=$row['id']?>">off</a>
-                            <a class="btn btn-primary btn-on-off" href="/?action=toggle-switch&id=<?=$row['id']?>">on/off</a>
+                            <a class="btn btn-primary btn-on-off" href="/?action=on&id=<?=TemplateHelpers::getIdOrIds($device)?>">on</a>
+                            <a class="btn btn-primary btn-on-off" href="/?action=off&id=<?=TemplateHelpers::getIdOrIds($device)?>">off</a>
+                            <a class="btn btn-primary btn-on-off" href="/?action=toggle-switch&id=<?=TemplateHelpers::getIdOrIds($device)?>">on/off</a>
                         </td>
-                        <td style="white-space:nowrap;"><a class="btn-refresh" href="/?action=status&id=<?=$row['id']?>"><?= $row['status'] ?? '?' ?></a></td>
-                        <td><?= $row['model'] ?></td>
+                        <td style="white-space:nowrap;"><a class="btn-refresh power-state" href="/?action=get-status&id=<?=TemplateHelpers::getIdOrIds($device)?>">?</a></td>
+                        <td style="white-space:nowrap;"><a class="btn-refresh brightness" href="/?action=get-status&id=<?=TemplateHelpers::getIdOrIds($device)?>">?</a></td>
+                        <td><?=TemplateHelpers::getModel($device)?></td>
                     </tr>
                     <?php
                 }
@@ -49,29 +53,5 @@
             </div>
         </div>
     </div>
-    <script type="text/javascript">
-        $(".btn-refresh").click(function(event) {
-            event.preventDefault();
-            let button = $(this);
-            let url = button.attr('href');
-            $.get(url, function( data ) {
-                let statuses = '';
-                dataArray = JSON.parse(data);
-                dataArray.forEach(function(value) {
-                    statuses += value.status+'/';
-                });
-                button.parent().find('a').text(statuses)
-            });
-        });
-        $(".btn-on-off").click(function(event) {
-            event.preventDefault();
-            let button = $(this);
-            let url = button.attr('href');
-            $.get(url, function() {});
-        });
-        $(".btn-refresh-all").click(function(event) {
-            event.preventDefault();
-            $(".btn-refresh").click();
-        });
-    </script>
+    <script src="/web/js.js"></script>
 </body>
