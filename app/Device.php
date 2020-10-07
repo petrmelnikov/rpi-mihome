@@ -5,15 +5,20 @@ namespace App;
 
 class Device
 {
-    const MIPLUG_EXECUTABLE = 'miplug';
-    const YEELIGHT_EXECUTABLE = 'miiocli yeelight';
+    const TYPE_MIPLUG = 'miplug';
+    const TYPE_YEELIGHT = 'yeelight';
+
+    const EXECUTABLE = [
+        self::TYPE_MIPLUG => 'miplug',
+        self::TYPE_YEELIGHT => 'miiocli yeelight',
+    ];
 
     private $id;
     private $ip;
     private $name;
     private $model;
     private $token;
-    private $executable;
+    private $type;
     private $rawStatus = null;
 
     public function __construct(array $data)
@@ -81,18 +86,22 @@ class Device
         return $this;
     }
 
-    public function getExecutable(): string
-    {
-        if (!isset($this->executable)) {
+    public function getType(): string {
+        if (!isset($this->type)) {
             if ($this->model === 'chuangmi.plug.m1') {
-                $this->executable = self::MIPLUG_EXECUTABLE;
+                $this->type = self::TYPE_MIPLUG;
             } elseif (false !== stristr($this->model, 'yeelink.light')) {
-                $this->executable = self::YEELIGHT_EXECUTABLE;
+                $this->type = self::TYPE_YEELIGHT;
             } else {
-                throw new \Exception('Unknown device! Can\'t detect executable!');
+                throw new \Exception('Unknown device! Can\'t detect type!');
             }
         }
-        return $this->executable;
+        return $this->type;
+    }
+
+    public function getExecutable(): string
+    {
+        return self::EXECUTABLE[$this->getType()];
     }
 
     public function setRawStatus(string $rawStatus): self

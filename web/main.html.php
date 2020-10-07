@@ -1,5 +1,6 @@
 <?php
 use App\TemplateHelpers;
+use App\Device;
 require_once 'head.html';
 ?>
 <body>
@@ -33,7 +34,30 @@ require_once 'head.html';
                             <a class="btn btn-primary btn-on-off" href="/?action=toggle-switch&id=<?=TemplateHelpers::getIdOrIds($device)?>">on/off</a>
                         </td>
                         <td style="white-space:nowrap;"><a class="btn-refresh power-state" href="/?action=get-status&id=<?=TemplateHelpers::getIdOrIds($device)?>">?</a></td>
-                        <td style="white-space:nowrap;"><a class="btn-refresh brightness" href="/?action=get-status&id=<?=TemplateHelpers::getIdOrIds($device)?>">?</a></td>
+                        <td style="white-space:nowrap;">
+                            <?php
+                            if (is_array($device) || Device::TYPE_YEELIGHT === $device->getType() ) {
+                                ?>
+                                <a class="btn-refresh brightness"
+                                   href="/?action=get-status&id=<?= TemplateHelpers::getIdOrIds($device) ?>">?</a>
+                                (
+                                <?php
+                                for ($i = 10; $i <= 100; $i += 10) {
+                                    ?>
+                                    <a class="btn-set-brightness"
+                                       href="/?action=set-brightness&brightness=<?= $i ?>&id=<?= TemplateHelpers::getIdOrIds($device) ?>"><?= $i ?></a>
+                                    <?php
+                                }
+                                ?>
+                                )
+                                <?php
+                            } else {
+                                ?>
+                                -
+                                <?php
+                            }
+                            ?>
+                        </td>
                         <td><?=TemplateHelpers::getModel($device)?></td>
                     </tr>
                     <?php

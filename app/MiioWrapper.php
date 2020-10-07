@@ -10,11 +10,11 @@ class MiioWrapper {
     public function __construct() {
         $this->homeDirectoryPath = trim(shell_exec('echo ~'));
         $this->debugCmd = $_ENV['DEBUG_CMD'] === 'true' ? true : false;
+        $this->consoleCommandPrefix = $_ENV['CONSOLE_COMMAND_PREFIX'] ?? '';
     }
 
     private function shellExec(string $cmd): ?string {
-        $exportLocalBinPath = 'export PATH=$PATH:'.$this->homeDirectoryPath.'/.local/bin;';
-        $fullCmd = $exportLocalBinPath.$cmd;
+        $fullCmd = $this->consoleCommandPrefix.$cmd;
         if ($this->debugCmd) {
             echo $fullCmd;
             die;
@@ -56,5 +56,10 @@ class MiioWrapper {
 
     private function setState(Device $device, $param) {
         $this->shellExec($device->getExecutable().' --ip '.$device->getIp().' --token '.$device->getToken().' '.$param);
+    }
+
+    public function setBrightness(Device $device, int $brightness) {
+        $param = 'set_brightness '.$brightness;
+        return $this->shellExec($device->getExecutable().' --ip '.$device->getIp().' --token '.$device->getToken().' '.$param);
     }
 }

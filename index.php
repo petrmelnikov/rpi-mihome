@@ -59,6 +59,15 @@ switch ($action) {
         }
         redirect();
         break;
+    case 'set-brightness':
+        $brightness = $_GET['brightness'];
+        $devices = $devicesRepository->getByIds($ids);
+
+        foreach ($devices as $device) {
+            $miioWrapper->setBrightness($device, $brightness);
+        }
+        redirect();
+        break;
     case 'get-status':
         $devices = $devicesRepository->getByIds($ids);
 
