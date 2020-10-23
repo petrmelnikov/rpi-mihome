@@ -1,7 +1,6 @@
 <?php
 
-
-$mihomeFilename = '1597270033_mihome.sqlite';
+$mihomeFilename = $argv[1];
 $mihomeDatabase = new SQLite3($mihomeFilename);
 
 $result = $mihomeDatabase->query(
