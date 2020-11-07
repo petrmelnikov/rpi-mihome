@@ -14,7 +14,7 @@ $(".btn-refresh").click(function(event) {
         button.parent().parent().find('a.brightness').text(brightnesses.slice(0,brightnesses.length-1));
     });
 });
-$(".btn-on-off .btn-set-brightness").click(function(event) {
+$(".btn-on-off, .btn-set-brightness").click(function(event) {
     event.preventDefault();
     let button = $(this);
     let url = button.attr('href');
