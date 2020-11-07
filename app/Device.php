@@ -9,8 +9,8 @@ class Device
     const TYPE_YEELIGHT = 'yeelight';
 
     const EXECUTABLE = [
-        self::TYPE_MIPLUG => 'miplug',
-        self::TYPE_YEELIGHT => 'miiocli yeelight',
+        self::TYPE_MIPLUG => 'plug_cli.py',
+        self::TYPE_YEELIGHT => 'cli.py yeelight',
     ];
 
     private $id;
