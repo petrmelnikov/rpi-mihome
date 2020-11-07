@@ -25,7 +25,8 @@ function redirect() {
 
 switch ($action) {
     case 'git-pull':
-        $content = shell_exec('git pull 2>&1');
+        $content = shell_exec('git pull --ff-only 2>&1');
+        $content .= shell_exec('git submodule update --init --recursive 2>&1');
         break;
     case 'off':
         $devices = $devicesRepository->getByIds($ids);
