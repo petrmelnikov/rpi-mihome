@@ -67,7 +67,9 @@ require_once 'head.html';
                 </table>
                 <?php
                     } else {
+                        ?><pre><?php
                         echo $content;
+                        ?></pre><?php
                     }
                 ?>
             </div>
