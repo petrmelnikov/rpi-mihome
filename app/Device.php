@@ -7,10 +7,12 @@ class Device
 {
     const TYPE_MIPLUG = 'miplug';
     const TYPE_YEELIGHT = 'yeelight';
+    const TYPE_HUMIDIFIER = 'humidifier';
 
     const EXECUTABLE = [
         self::TYPE_MIPLUG => 'plug_cli.py',
         self::TYPE_YEELIGHT => 'cli.py yeelight',
+        self::TYPE_HUMIDIFIER => 'cli.py airhumidifiermiot',
     ];
 
     private $id;
@@ -92,6 +94,8 @@ class Device
                 $this->type = self::TYPE_MIPLUG;
             } elseif (false !== stristr($this->model, 'yeelink.light')) {
                 $this->type = self::TYPE_YEELIGHT;
+            } elseif ($this->model === 'zhimi.humidifier.ca4') {
+                $this->type = self::TYPE_HUMIDIFIER;
             } else {
                 throw new \Exception('Unknown device! Can\'t detect type!');
             }
@@ -108,6 +112,11 @@ class Device
     {
         $this->rawStatus = $rawStatus;
         return $this;
+    }
+
+    public function getRawStatus(): string
+    {
+        return $this->rawStatus;
     }
 
     public function getPowerState(): ?bool {

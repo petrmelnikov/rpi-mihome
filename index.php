@@ -23,6 +23,7 @@ function redirect() {
     header('Location: '.$location);
 }
 
+$content = '';
 switch ($action) {
     case 'git-pull':
         $content = shell_exec('git pull --ff-only 2>&1');
@@ -86,6 +87,14 @@ switch ($action) {
         die;
     case 'by-ids':
         $content = $devicesRepository->getByIds($ids);
+        break;
+    case 'humidifier-status':
+        $humidifiers = $devicesRepository->getDevicesByType(\App\Device::TYPE_HUMIDIFIER);
+        $humidifier = reset($humidifiers);
+        if (false !== $humidifier) {
+            $miioWrapper->updateDeviceStatus($humidifier);
+            $content = $humidifier->getRawStatus();
+        }
         break;
     case 'index':
     default:

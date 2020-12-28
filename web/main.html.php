@@ -7,6 +7,7 @@ require_once 'head.html';
     <div class="container">
         <a class="btn btn-primary" href="/">index</a>
         <a class="btn btn-primary" href="/?mini=1">mini</a>
+        <a class="btn btn-primary" href="/?action=humidifier-status">humidifier</a>
         <div class="row">
             <div class="col-sm">
                 <?php

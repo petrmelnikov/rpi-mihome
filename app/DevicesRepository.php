@@ -89,4 +89,21 @@ class DevicesRepository {
         return $result;
     }
 
+    public function getDevicesByType(string $type): array {
+        $stmt = SQLite3Wrapper::getInstance()->prepare(
+            "SELECT
+                *
+                FROM devices
+                WHERE model LIKE :model;
+        ");
+
+        $stmt->bindValue('model', '%'.$type.'%', SQLITE3_TEXT);
+
+        $rows = $stmt->execute();
+        $result = [];
+        while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
+            $result[] = $this->prepareRow($row);
+        }
+        return $result;
+    }
 }
