@@ -114,9 +114,44 @@ class Device
         return $this;
     }
 
-    public function getRawStatus(): string
+    public function getRawStatus(): ?string
     {
         return $this->rawStatus;
+    }
+
+    public function getStatus(): array {
+        if (null === $this->getRawStatus()) {
+            return [];
+        }
+        $pattern = '/(.+):\s(.+)\n?/';
+        preg_match_all($pattern, $this->getRawStatus(), $matches);
+        $result = [];
+        foreach ($matches[1] as $key => $name) {
+            $value = $matches[2][$key];
+            if (!isset($result[$name])) {
+                $result[$name] = $value;
+            } else {
+                $result[$name] = [$result[$name]];
+                $result[$name][] = $value;
+            }
+        }
+        return $result;
+    }
+
+    public function getStatusValue(string $valueName): string {
+        $status = $this->getStatus();
+        if (isset($status[$valueName])) {
+            if (is_array($status[$valueName])) {
+                foreach ($status[$valueName] as $value) {
+                    if (!stristr($value, '°F')) {
+                        return $value;
+                    }
+                }
+            } else {
+                return $status[$valueName];
+            }
+        }
+        return '';
     }
 
     public function getPowerState(): ?bool {
