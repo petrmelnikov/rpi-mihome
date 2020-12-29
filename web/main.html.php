@@ -11,13 +11,13 @@ require_once 'head.html';
                 <?php
                 switch ($templateName) {
                     case 'humidity.html.php':
-                        require_once 'web/humidity.html.php';
+                        require_once 'humidity.html.php';
                         break;
                     case 'lights-control-mini.html.php':
-                        require_once 'web/lights-control-mini.html.php';
+                        require_once 'lights-control-mini.html.php';
                         break;
                     default:
-                        require_once 'web/lights-control.html.php';
+                        require_once 'lights-control.html.php';
                         break;
                 }
                 ?>

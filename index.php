@@ -5,6 +5,7 @@ $dotenv->load();
 
 use App\MiioWrapper;
 use App\DevicesRepository;
+use App\Device;
 
 $miioWrapper = new MiioWrapper();
 $devicesRepository = new DevicesRepository();
@@ -90,7 +91,7 @@ switch ($action) {
         $content = $devicesRepository->getByIds($ids);
         break;
     case 'humidifier-status':
-        $humidifiers = $devicesRepository->getDevicesByType(\App\Device::TYPE_HUMIDIFIER);
+        $humidifiers = $devicesRepository->getDevicesByType(Device::TYPE_HUMIDIFIER);
         $humidifier = reset($humidifiers);
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);
