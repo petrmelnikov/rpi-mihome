@@ -24,6 +24,7 @@ function redirect() {
 }
 
 $content = '';
+$templateName = '';
 switch ($action) {
     case 'git-pull':
         $content = shell_exec('git pull --ff-only 2>&1');
@@ -93,7 +94,16 @@ switch ($action) {
         $humidifier = reset($humidifiers);
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);
-            $content = $humidifier->getRawStatus();
+            $valueNames = [
+                'Temperature',
+                'Humidity',
+                'Water Level',
+            ];
+            $content = [];
+            foreach ($valueNames as $valueName) {
+                $content[$valueName] = $humidifier->getStatusValue($valueName);
+            }
+            $templateName = 'humidity.html.php';
         }
         break;
     case 'index':
@@ -102,9 +112,6 @@ switch ($action) {
         break;
 }
 if (!empty($_GET['mini'])) {
-    require_once 'web/mini-main.html.php';
-} else {
-    require_once 'web/main.html.php';
+    $templateName = 'lights-control-mini.html.php';
 }
-
-
+require_once 'web/main.html.php';
