@@ -34,6 +34,15 @@
                     ],
                     borderWidth: 5,
                     fill: false
+                },
+                {
+                    label: 'Water level %',
+                    data: <?= json_encode($waterLevel)?>,
+                    borderColor: [
+                        'rgba(71,145,255, 1)',
+                    ],
+                    borderWidth: 5,
+                    fill: false
                 }
             ]
         };

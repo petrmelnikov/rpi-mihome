@@ -124,10 +124,12 @@ switch ($action) {
         $time = [];
         $temperature = [];
         $humidity = [];
+        $waterLevel = [];
         foreach ($result as $row) {
             $time[] = date("d.m.Y H:i:s", $row['unixtime']);
             $temperature[] = $row['temperature'];
             $humidity[] = $row['humidity'];
+            $waterLevel[] = $row['water_level'];
         }
 
         break;
