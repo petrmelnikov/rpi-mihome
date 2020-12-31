@@ -101,7 +101,6 @@ switch ($action) {
             'Temperature',
             'Humidity',
             'Water Level',
-            'Error',
         ];
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);

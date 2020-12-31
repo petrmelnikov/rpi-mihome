@@ -11,23 +11,23 @@
     ?>
 </table>
 <script src="/vendor/nnnick/chartjs/dist/Chart.js"></script>
-<canvas id="myChart1" width="400" height="400"></canvas>
+<canvas id="myChart1" width="500" height="200"></canvas>
 <script>
     var ctx = document.getElementById('myChart1');
     var chartData = {
             labels: <?= json_encode($time)?>,
             datasets: [
                 {
-                label: 'Temperature',
-                data: <?= json_encode($temperature)?>,
-                borderColor: [
-                    'rgba(255, 206, 86, 1)',
-                ],
-                borderWidth: 5,
-                fill: false
-                },
+                    label: 'Temperature C°',
+                    data: <?= json_encode($temperature)?>,
+                    borderColor: [
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 5,
+                    fill: false
+                    },
                 {
-                    label: 'Humidity',
+                    label: 'Humidity %',
                     data: <?= json_encode($humidity)?>,
                     borderColor: [
                         'rgba(86, 206, 255, 1)',
@@ -44,7 +44,7 @@
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: false
                     }
                 }]
             }
