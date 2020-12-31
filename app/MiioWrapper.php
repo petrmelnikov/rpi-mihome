@@ -14,8 +14,8 @@ class MiioWrapper {
 
     private function shellExec(string $cmd): ?string {
         $appRootPath = AppPathHelper::getAppRootPath();
-        $exportPathCommand = 'export PYTHONPATH=$PYTHONPATH:' . $appRootPath . 'python-miio';
-        $pythonExecutable = 'python3 ' . $appRootPath . 'python-miio/miio/';
+        $exportPathCommand = 'export PYTHONPATH=$PYTHONPATH:' . $appRootPath . '/python-miio';
+        $pythonExecutable = 'python3 ' . $appRootPath . '/python-miio/miio/';
         $consoleCommandPrefix = $exportPathCommand . ';' . $pythonExecutable;
         $fullCmd = $consoleCommandPrefix.$cmd;
         if ($this->debugCmd) {
