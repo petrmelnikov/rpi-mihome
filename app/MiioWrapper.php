@@ -4,11 +4,9 @@ namespace App;
 
 class MiioWrapper {
 
-    private $homeDirectoryPath;
     private $debugCmd;
 
     public function __construct() {
-        $this->homeDirectoryPath = trim(shell_exec('echo ~'));
         $this->debugCmd = $_ENV['DEBUG_CMD'] === 'true' ? true : false;
         $this->consoleCommandPrefix = $_ENV['CONSOLE_COMMAND_PREFIX'] ?? '';
     }

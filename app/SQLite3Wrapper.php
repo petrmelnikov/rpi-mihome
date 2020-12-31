@@ -10,7 +10,7 @@ class SQLite3Wrapper
 
     public static function getInstance(){
         if (null === self::$instance) {
-            $databasePath = $_ENV['DATABASE_PATH'];
+            $databasePath = __DIR__ . '/../' . $_ENV['DATABASE_PATH'];
             self::$instance = new SQLite3($databasePath);
         }
         return self::$instance;

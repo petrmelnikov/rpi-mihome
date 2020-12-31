@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
 
 use App\MiioWrapper;
 use App\DevicesRepository;
 use App\Device;
 use App\SQLite3Wrapper;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 $miioWrapper = new MiioWrapper();
 $devicesRepository = new DevicesRepository();
