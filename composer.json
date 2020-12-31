@@ -3,7 +3,8 @@
         "php": "^7.3",
         "twbs/bootstrap": "4.0.0",
         "components/jquery": "^3.5",
-        "vlucas/phpdotenv": "^5.1"
+        "vlucas/phpdotenv": "^5.1",
+        "nnnick/chartjs": "^2.9"
     },
     "autoload": {
         "psr-4": {

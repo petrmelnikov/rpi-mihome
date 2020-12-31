@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/vendor/autoload.php';
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
 
 use App\MiioWrapper;
 use App\DevicesRepository;
 use App\Device;
+use App\SQLite3Wrapper;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 $miioWrapper = new MiioWrapper();
 $devicesRepository = new DevicesRepository();
@@ -93,19 +96,41 @@ switch ($action) {
     case 'humidifier-status':
         $humidifiers = $devicesRepository->getDevicesByType(Device::TYPE_HUMIDIFIER);
         $humidifier = reset($humidifiers);
+        $valueNames = [
+            'Power',
+            'Temperature',
+            'Humidity',
+            'Water Level',
+            'Error',
+        ];
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);
-            $valueNames = [
-                'Temperature',
-                'Humidity',
-                'Water Level',
-            ];
             $content = [];
             foreach ($valueNames as $valueName) {
                 $content[$valueName] = $humidifier->getStatusValue($valueName);
             }
             $templateName = 'humidity.html.php';
         }
+
+        $rows = SQLite3Wrapper::getInstance()->query(
+            "SELECT
+                *
+                FROM humidifier_history;
+        ");
+        $result = [];
+        while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
+            $result[] =  $row;
+        }
+
+        $time = [];
+        $temperature = [];
+        $humidity = [];
+        foreach ($result as $row) {
+            $time[] = date("d.m.Y H:i:s", $row['unixtime']);
+            $temperature[] = $row['temperature'];
+            $humidity[] = $row['humidity'];
+        }
+
         break;
     case 'index':
     default:
