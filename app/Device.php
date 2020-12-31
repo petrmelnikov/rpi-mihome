@@ -103,13 +103,9 @@ class Device
         return $this->type;
     }
 
-    private function getAppRootPath(): string {
-        return __DIR__ . '/../';
-    }
-
     public function getExecutable(): string
     {
-        return $this->getAppRootPath() . self::EXECUTABLE[$this->getType()];
+        return self::EXECUTABLE[$this->getType()];
     }
 
     public function setRawStatus(string $rawStatus): self
