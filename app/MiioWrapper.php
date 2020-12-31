@@ -2,17 +2,22 @@
 
 namespace App;
 
+use App\Tools\AppPathHelper;
+
 class MiioWrapper {
 
     private $debugCmd;
 
     public function __construct() {
         $this->debugCmd = $_ENV['DEBUG_CMD'] === 'true' ? true : false;
-        $this->consoleCommandPrefix = $_ENV['CONSOLE_COMMAND_PREFIX'] ?? '';
     }
 
     private function shellExec(string $cmd): ?string {
-        $fullCmd = $this->consoleCommandPrefix.$cmd;
+        $appRootPath = AppPathHelper::getAppRootPath();
+        $exportPathCommand = 'export PYTHONPATH=$PYTHONPATH:' . $appRootPath . 'python-miio';
+        $pythonExecutable = 'python3 ' . $appRootPath . 'python-miio/miio/';
+        $consoleCommandPrefix = $exportPathCommand . ';' . $pythonExecutable;
+        $fullCmd = $consoleCommandPrefix.$cmd;
         if ($this->debugCmd) {
             echo $fullCmd;
             die;
