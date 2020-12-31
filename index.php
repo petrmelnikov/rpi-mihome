@@ -120,7 +120,7 @@ switch ($action) {
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
             $result[] =  $row;
         }
-
+        
         $time = [];
         $temperature = [];
         $humidity = [];
