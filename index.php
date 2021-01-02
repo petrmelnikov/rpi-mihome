@@ -111,16 +111,25 @@ switch ($action) {
             $templateName = 'humidity.html.php';
         }
 
-        $rows = SQLite3Wrapper::getInstance()->query(
-            "SELECT
-                *
-                FROM humidifier_history;
+        $count = !empty($_GET['count']) ? (int) $count : 24 * 6;
+
+        $query = SQLite3Wrapper::getInstance()->prepare(
+            "SELECT * FROM (
+                    SELECT * FROM humidifier_history
+                    ORDER BY id DESC LIMIT :count
+                    )
+                    ORDER BY id ASC;
         ");
         $result = [];
+
+        $query->bindValue(':count', $count, SQLITE3_INTEGER);
+
+        $rows = $query->execute();
+
         while ($row = $rows->fetchArray(SQLITE3_ASSOC)) {
             $result[] =  $row;
         }
-        
+
         $time = [];
         $temperature = [];
         $humidity = [];
