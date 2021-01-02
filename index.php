@@ -111,7 +111,7 @@ switch ($action) {
             $templateName = 'humidity.html.php';
         }
 
-        $count = !empty($_GET['count']) ? (int) $count : 24 * 6;
+        $count = !empty($_GET['count']) ? (int) $_GET['count'] : 24 * 6;
 
         $query = SQLite3Wrapper::getInstance()->prepare(
             "SELECT * FROM (
