@@ -5,6 +5,7 @@ use App\Device;
 
 if (is_array($content)) {
     ?>
+    <script src="/web/lights-control.js"></script>
     <table class="table">
         <tr>
             <th>name</th>

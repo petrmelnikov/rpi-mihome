@@ -29,5 +29,4 @@ require_once 'head.html';
             </div>
         </div>
     </div>
-    <script src="/web/js.js"></script>
 </body>

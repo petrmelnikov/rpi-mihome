@@ -4,7 +4,7 @@
         ?>
         <tr>
             <td style="white-space:nowrap;"><?= $name ?></td>
-            <td style="white-space:nowrap;"><?= $value ?></td>
+            <td style="white-space:nowrap;" id="<?= mb_strtolower(str_ireplace(' ', '-', $name)) ?>"><?= $value ?></td>
         </tr>
         <?php
     }
@@ -13,50 +13,9 @@
 <script src="/vendor/nnnick/chartjs/dist/Chart.js"></script>
 <canvas id="myChart1" width="500" height="200"></canvas>
 <script>
-    var ctx = document.getElementById('myChart1');
-    var chartData = {
-            labels: <?= json_encode($time)?>,
-            datasets: [
-                {
-                    label: 'Temperature C°',
-                    data: <?= json_encode($temperature)?>,
-                    borderColor: [
-                        'rgba(255, 206, 86, 1)',
-                    ],
-                    borderWidth: 5,
-                    fill: false
-                    },
-                {
-                    label: 'Humidity %',
-                    data: <?= json_encode($humidity)?>,
-                    borderColor: [
-                        'rgba(86, 206, 255, 1)',
-                    ],
-                    borderWidth: 5,
-                    fill: false
-                },
-                {
-                    label: 'Water level %',
-                    data: <?= json_encode($waterLevel)?>,
-                    borderColor: [
-                        'rgba(71,145,255, 1)',
-                    ],
-                    borderWidth: 5,
-                    fill: false
-                }
-            ]
-        };
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: chartData,
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
+var chartTime = <?= json_encode($time)?>;
+var chartTemperature = <?= json_encode($temperature)?>;
+var chartHumidity = <?= json_encode($humidity)?>;
+var chartWaterLevel = <?= json_encode($waterLevel)?>;
 </script>
+<script src="/web/humidity.js"></script>

@@ -93,23 +93,32 @@ switch ($action) {
     case 'by-ids':
         $content = $devicesRepository->getByIds($ids);
         break;
-    case 'humidifier-status':
+    case 'humidifier-status-json':
         $humidifiers = $devicesRepository->getDevicesByType(Device::TYPE_HUMIDIFIER);
         $humidifier = reset($humidifiers);
         $valueNames = [
-            'Power',
-            'Temperature',
-            'Humidity',
-            'Water Level',
+            'power',
+            'temperature',
+            'humidity',
+            'waterLevel',
         ];
+        $content = [];
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);
-            $content = [];
             foreach ($valueNames as $valueName) {
                 $content[$valueName] = $humidifier->getStatusValue($valueName);
             }
-            $templateName = 'humidity.html.php';
         }
+        echo json_encode($content);
+        die;
+    case 'humidifier-status':
+        $content = [
+            'Power' => '-',
+            'Temperature' => '-',
+            'Humidity' => '-',
+            'Water Level' => '-',
+        ];
+        $templateName = 'humidity.html.php';
 
         $count = !empty($_GET['count']) ? (int) $_GET['count'] : 24 * 6;
 
