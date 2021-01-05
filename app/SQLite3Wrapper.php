@@ -3,7 +3,7 @@
 namespace App;
 
 use SQLite3;
-use App\Tools\AppPathHelper;
+use App\Tools\Tools;
 
 class SQLite3Wrapper
 {
@@ -11,7 +11,7 @@ class SQLite3Wrapper
 
     public static function getInstance(){
         if (null === self::$instance) {
-            $databasePath = AppPathHelper::getAppRootPath() . '/' . $_ENV['DATABASE_PATH'];
+            $databasePath = Tools::getAppRootPath() . '/' . $_ENV['DATABASE_PATH'];
             self::$instance = new SQLite3($databasePath);
         }
         return self::$instance;

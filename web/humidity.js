@@ -3,10 +3,10 @@ $(window).on("load", function(event) {
     let url = '/?action=humidifier-status-json';
     $.get(url, function( data ) {
         dataArray = JSON.parse(data);
+        $('#power').text(dataArray.power);
         $('#temperature').text(dataArray.temperature)
         $('#humidity').text(dataArray.humidity);
-        $('#water-level').text(dataArray.water-level);
-        $('#power').text(dataArray.power);
+        $('#water-level').text(dataArray.waterLevel);
     });
 });
 

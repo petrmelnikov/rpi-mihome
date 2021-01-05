@@ -6,6 +6,7 @@ use App\DevicesRepository;
 use App\Device;
 use App\SQLite3Wrapper;
 use Dotenv\Dotenv;
+use App\Tools\Tools;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
@@ -106,7 +107,7 @@ switch ($action) {
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);
             foreach ($valueNames as $valueName) {
-                $key = mb_strtolower(str_ireplace(' ', '-', $valueName));
+                $key = Tools::toCamelCase($valueName);
                 $content[$key] = $humidifier->getStatusValue($valueName);
             }
         }

@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Tools\AppPathHelper;
+use App\Tools\Tools;
 
 class MiioWrapper {
 
@@ -13,7 +13,7 @@ class MiioWrapper {
     }
 
     private function shellExec(string $cmd): ?string {
-        $appRootPath = AppPathHelper::getAppRootPath();
+        $appRootPath = Tools::getAppRootPath();
         $exportPathCommand = 'export PYTHONPATH=$PYTHONPATH:' . $appRootPath . '/python-miio';
         $pythonExecutable = 'python3 ' . $appRootPath . '/python-miio/miio/';
         $consoleCommandPrefix = $exportPathCommand . ';' . $pythonExecutable;
