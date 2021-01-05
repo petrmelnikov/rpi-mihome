@@ -5,7 +5,7 @@ $(window).on("load", function(event) {
         dataArray = JSON.parse(data);
         $('#temperature').text(dataArray.temperature)
         $('#humidity').text(dataArray.humidity);
-        $('#water-level').text(dataArray.waterLevel);
+        $('#water-level').text(dataArray.water-level);
         $('#power').text(dataArray.power);
     });
 });

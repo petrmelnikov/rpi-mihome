@@ -97,16 +97,17 @@ switch ($action) {
         $humidifiers = $devicesRepository->getDevicesByType(Device::TYPE_HUMIDIFIER);
         $humidifier = reset($humidifiers);
         $valueNames = [
-            'power',
-            'temperature',
-            'humidity',
-            'waterLevel',
+            'Power',
+            'Temperature',
+            'Humidity',
+            'Water Level',
         ];
         $content = [];
         if (false !== $humidifier) {
             $miioWrapper->updateDeviceStatus($humidifier);
             foreach ($valueNames as $valueName) {
-                $content[$valueName] = $humidifier->getStatusValue($valueName);
+                $key = mb_strtolower(str_ireplace(' ', '-', $valueName));
+                $content[$key] = $humidifier->getStatusValue($valueName);
             }
         }
         echo json_encode($content);
