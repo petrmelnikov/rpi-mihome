@@ -1,3 +1,16 @@
+<?php
+use App\UrlParameterHelper;
+
+$urlParameterhelper = new UrlParameterHelper();
+$urlParameterhelper->setParams($_GET);
+
+?>
+
+<a class="btn btn-primary" href="/?<?=$urlParameterhelper->setParam('count', 12*6)->getParamsString()?>">12 hours</a>
+<a class="btn btn-primary" href="/?<?=$urlParameterhelper->setParam('count', 24*6)->getParamsString()?>">24 hours</a>
+<a class="btn btn-primary" href="/?<?=$urlParameterhelper->setParam('count', 2*24*6)->getParamsString()?>">2 days</a>
+<a class="btn btn-primary" href="/?<?=$urlParameterhelper->setParam('count', 7*24*6)->getParamsString()?>">1 week</a>
+
 <table class="table">
     <?php
     foreach ($content as $name => $value) {
