@@ -147,7 +147,7 @@ switch ($action) {
         $waterLevel = [];
         $currentDate = date("d.m.Y");
         foreach ($result as $key => $row) {
-            $dateFormatted = date("d.m", $row['unixtime']);
+            $dateFormatted = date("d.m.Y", $row['unixtime']);
             $timeFormatted = date("H:i", $row['unixtime']);
             if ($currentDate === $dateFormatted) {
                 $dateFormatted = '';
