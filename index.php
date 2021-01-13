@@ -145,8 +145,14 @@ switch ($action) {
         $temperature = [];
         $humidity = [];
         $waterLevel = [];
-        foreach ($result as $row) {
-            $time[] = date("d.m.Y H:i:s", $row['unixtime']);
+        $currentDate = date("d.m.Y");
+        foreach ($result as $key => $row) {
+            $dateFormatted = date("d.m.Y", $row['unixtime']);
+            $timeFormatted = date("H:i", $row['unixtime']);
+            if ($currentDate === $dateFormatted) {
+                $dateFormatted = '';
+            }
+            $time[] = $dateFormatted . ' ' . $timeFormatted;
             $temperature[] = $row['temperature'];
             $humidity[] = $row['humidity'];
             $waterLevel[] = $row['water_level'];
