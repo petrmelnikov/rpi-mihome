@@ -5,7 +5,6 @@ use App\Device;
 
 if (is_array($content)) {
     ?>
-    <script src="/web/lights-control.js"></script>
     <table class="table">
         <tr>
             <th>name</th>
@@ -63,6 +62,7 @@ if (is_array($content)) {
         }
         ?>
     </table>
+    <script src="/web/lights-control.js"></script>
     <?php
 } else {
     ?>
